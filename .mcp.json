@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "n8n-mcp": {
+      "command": "npx",
+      "args": ["n8n-mcp"],                                                                         
+      "env": {
+          "MCP_MODE": "stdio",
+          "LOG_LEVEL": "error",
+          "DISABLE_CONSOLE_OUTPUT": "true",
+          "N8N_API_URL": "https://crisnc100.app.n8n.cloud",
+          "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0Mzc4ZDk4Ny0yMzY0LTQ5NDEtYmUwMy0zYWVmOTNiMDRmNDgiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYwMzU4NTE5LCJleHAiOjE3NjI5MjM2MDB9.bMaVZ6L6TnPKOIjIWLcbT5nMNGcrqzg0n5xFX_e0vI0"
+      }
+  }
+}
+}   

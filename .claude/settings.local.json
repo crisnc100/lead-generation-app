@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm view n8n-mcp)",
+      "Bash(npm view @n8n/mcp)",
+      "mcp__firecrawl-mcp__firecrawl_scrape"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "n8n-mcp"
+  ]
+}

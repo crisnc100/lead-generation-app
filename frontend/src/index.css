@@ -1,0 +1,206 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Clean light mode - professional blue/teal palette */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 200 98% 39%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 200 98% 39%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 200 98% 39%;
+
+    --radius: 0.75rem;
+
+    /* Modern gradient colors - blue/teal */
+    --gradient-from: 200 98% 39%;
+    --gradient-to: 175 80% 40%;
+
+    /* Modal overlay colors - light mode uses strong overlay to block content */
+    --modal-overlay: 0 0% 0%;
+    --modal-overlay-opacity: 0.65;
+  }
+
+  .dark {
+    /* Dark mode - subtle and elegant */
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 14%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 14%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 200 98% 50%;
+    --primary-foreground: 222 47% 11%;
+
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 200 98% 50%;
+    --accent-foreground: 222 47% 11%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 33% 24%;
+    --input: 217 33% 24%;
+    --ring: 200 98% 50%;
+
+    /* Dark mode gradients */
+    --gradient-from: 200 98% 50%;
+    --gradient-to: 175 80% 45%;
+
+    /* Modal overlay colors - dark mode uses stronger overlay */
+    --modal-overlay: 0 0% 0%;
+    --modal-overlay-opacity: 0.85;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-feature-settings: "rlig" 1, "calt" 1;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom scrollbar - adapts to theme */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(135deg, hsl(var(--gradient-from)), hsl(var(--gradient-to)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Modal overlay utility - uses CSS variables for theme-aware overlay */
+.modal-overlay {
+  background-color: hsl(var(--modal-overlay) / var(--modal-overlay-opacity));
+}
+
+/* Remove blur in light mode, keep subtle blur in dark mode */
+.modal-overlay-blur {
+  backdrop-filter: none;
+}
+
+.dark .modal-overlay-blur {
+  backdrop-filter: blur(4px);
+}
+
+/* Glassmorphism card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dark .glass-card {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Subtle gradient border */
+.gradient-border {
+  position: relative;
+  border: 2px solid transparent;
+  background: linear-gradient(135deg, hsl(var(--gradient-from)), hsl(var(--gradient-to)));
+  background-clip: padding-box;
+}
+
+/* Glow effect for primary actions */
+.glow-effect {
+  box-shadow: 0 4px 14px 0 rgba(0, 163, 255, 0.15);
+  transition: box-shadow 0.3s ease;
+}
+
+.glow-effect:hover {
+  box-shadow: 0 6px 20px 0 rgba(0, 163, 255, 0.25);
+}
+
+.dark .glow-effect {
+  box-shadow: 0 4px 14px 0 rgba(0, 163, 255, 0.3);
+}
+
+.dark .glow-effect:hover {
+  box-shadow: 0 6px 20px 0 rgba(0, 163, 255, 0.45);
+}
+
+/* Smooth animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Subtle grid background effect */
+.grid-background {
+  background-image:
+    linear-gradient(rgba(0, 163, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 163, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.dark .grid-background {
+  background-image:
+    linear-gradient(rgba(0, 163, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 163, 255, 0.08) 1px, transparent 1px);
+}
