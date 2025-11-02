@@ -159,6 +159,7 @@ serve(async (req) => {
       throw new Error('N8N_WEBHOOK_SECRET not configured')
     }
 
+    const now = Math.floor(Date.now() / 1000);
     const payload = {
       workspace_id: search.workspace_id,
       search_id: search.id,
@@ -167,7 +168,8 @@ serve(async (req) => {
       radius_miles: search.radius_miles,
       service: search.service,
       min_score: search.min_score,
-      iat: Math.floor(Date.now() / 1000),
+      iat: now,
+      exp: now + 3600, // Token expires in 1 hour
     }
 
     const webhookToken = await createJWT(payload, webhookSecret)

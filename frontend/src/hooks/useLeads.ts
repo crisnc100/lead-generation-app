@@ -8,6 +8,12 @@ interface LeadsFilters {
   searchId?: string
   minScore?: number
   searchQuery?: string
+  // Signal filters
+  hasOnlineBooking?: boolean
+  hasChatWidget?: boolean
+  lateHours?: boolean
+  phoneIssues?: boolean
+  isFranchise?: boolean
 }
 
 // =====================================================
@@ -38,6 +44,27 @@ export function useLeads(filters?: LeadsFilters) {
 
       if (filters?.searchQuery) {
         query = query.ilike('name', `%${filters.searchQuery}%`)
+      }
+
+      // Apply signal filters
+      if (filters?.hasOnlineBooking !== undefined) {
+        query = query.eq('has_online_booking', filters.hasOnlineBooking)
+      }
+
+      if (filters?.hasChatWidget !== undefined) {
+        query = query.eq('has_chat_widget', filters.hasChatWidget)
+      }
+
+      if (filters?.lateHours !== undefined) {
+        query = query.eq('late_hours', filters.lateHours)
+      }
+
+      if (filters?.phoneIssues !== undefined) {
+        query = query.eq('phone_issues_in_reviews', filters.phoneIssues)
+      }
+
+      if (filters?.isFranchise !== undefined) {
+        query = query.eq('is_franchise', filters.isFranchise)
       }
 
       const { data, error } = await query

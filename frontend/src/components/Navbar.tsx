@@ -94,7 +94,10 @@ export default function Navbar() {
               </p>
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={signOut} className="text-red-500 focus:text-red-500 cursor-pointer hover:bg-red-500 hover:text-white">
+            <DropdownMenuItem
+              onClick={signOut}
+              className="text-red-500 cursor-pointer hover:bg-red-500 hover:text-white focus:bg-red-500 focus:text-white data-[highlighted]:bg-red-500 data-[highlighted]:text-white"
+            >
               <LogOut className="h-4 w-4 mr-2" />
               Sign Out
             </DropdownMenuItem>

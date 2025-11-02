@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import AppLayout from '@/components/AppLayout'
 import TableSkeleton from '@/components/TableSkeleton'
 import ScoreBreakdown from '@/components/ScoreBreakdown'
+import ScoringGuide from '@/components/ScoringGuide'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -23,7 +24,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { Download, ExternalLink, Search, Users, Plus } from 'lucide-react'
+import { Download, ExternalLink, Search, Users, Plus, Info } from 'lucide-react'
 import { useLeads, exportLeadsToCSV } from '@/hooks/useLeads'
 import { useSavedSearches } from '@/hooks/useSavedSearches'
 
@@ -33,15 +34,42 @@ export default function LeadsPage() {
   const [selectedSearchId, setSelectedSearchId] = useState<string>('all')
   const [minScore, setMinScore] = useState<string>('any')
 
+  // Signal filters (3-state: undefined = no filter, true/false = filter by value)
+  const [hasBookingFilter, setHasBookingFilter] = useState<boolean | undefined>(undefined)
+  const [hasChatFilter, setHasChatFilter] = useState<boolean | undefined>(undefined)
+  const [lateHoursFilter, setLateHoursFilter] = useState<boolean | undefined>(undefined)
+  const [phoneIssuesFilter, setPhoneIssuesFilter] = useState<boolean | undefined>(undefined)
+  const [franchiseFilter, setFranchiseFilter] = useState<boolean | undefined>(undefined)
+
+  // Scoring guide modal
+  const [showScoringGuide, setShowScoringGuide] = useState(false)
+
   // Build filters object
   const filters = {
     searchQuery: searchQuery || undefined,
     searchId: selectedSearchId !== 'all' ? selectedSearchId : undefined,
     minScore: minScore !== 'any' ? parseInt(minScore) : undefined,
+    hasOnlineBooking: hasBookingFilter,
+    hasChatWidget: hasChatFilter,
+    lateHours: lateHoursFilter,
+    phoneIssues: phoneIssuesFilter,
+    isFranchise: franchiseFilter,
   }
 
   const { data: leads, isLoading } = useLeads(filters)
   const { data: savedSearches } = useSavedSearches()
+
+  // Calculate active filter count
+  const activeFilterCount = [
+    searchQuery,
+    selectedSearchId !== 'all',
+    minScore !== 'any',
+    hasBookingFilter !== undefined,
+    hasChatFilter !== undefined,
+    lateHoursFilter !== undefined,
+    phoneIssuesFilter !== undefined,
+    franchiseFilter !== undefined,
+  ].filter(Boolean).length
 
   const handleExport = () => {
     if (leads && leads.length > 0) {
@@ -54,6 +82,11 @@ export default function LeadsPage() {
     setSearchQuery('')
     setSelectedSearchId('all')
     setMinScore('any')
+    setHasBookingFilter(undefined)
+    setHasChatFilter(undefined)
+    setLateHoursFilter(undefined)
+    setPhoneIssuesFilter(undefined)
+    setFranchiseFilter(undefined)
   }
 
   return (
@@ -62,9 +95,20 @@ export default function LeadsPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              Leads
-            </h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                Leads
+              </h1>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowScoringGuide(true)}
+                className="hover:bg-secondary/80 cursor-pointer transition-colors"
+              >
+                <Info className="h-4 w-4 mr-1" />
+                Learn About Scoring
+              </Button>
+            </div>
             <p className="text-muted-foreground mt-1">
               All qualified leads from your searches
             </p>
@@ -84,14 +128,14 @@ export default function LeadsPage() {
         <div className="border rounded-xl p-6 bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-sm shadow-md">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-sm font-semibold text-foreground">Filter Leads</h3>
-            {(searchQuery || selectedSearchId !== 'all' || minScore !== 'any') && (
+            {activeFilterCount > 0 && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={clearFilters}
                 className="h-8 text-xs hover:bg-secondary/80 cursor-pointer transition-colors"
               >
-                Clear All
+                Clear All {activeFilterCount > 0 && `(${activeFilterCount})`}
               </Button>
             )}
           </div>
@@ -141,6 +185,82 @@ export default function LeadsPage() {
                   <SelectItem value="4">4+ (Low)</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+          </div>
+
+          {/* Signal Filters */}
+          <div className="mt-4 space-y-2">
+            <Label className="text-sm font-medium">Filter by Signals</Label>
+            <div className="flex flex-wrap gap-2">
+              <Badge
+                variant={hasBookingFilter === false ? 'default' : 'outline'}
+                className={`cursor-pointer px-3 py-1.5 transition-all duration-200 hover:scale-105 ${
+                  hasBookingFilter === false
+                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
+                    : 'hover:bg-accent'
+                }`}
+                onClick={() =>
+                  setHasBookingFilter((prev) => (prev === false ? undefined : false))
+                }
+              >
+                {hasBookingFilter === false && '✓ '}No Online Booking
+              </Badge>
+
+              <Badge
+                variant={phoneIssuesFilter === true ? 'default' : 'outline'}
+                className={`cursor-pointer px-3 py-1.5 transition-all duration-200 hover:scale-105 ${
+                  phoneIssuesFilter === true
+                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
+                    : 'hover:bg-accent'
+                }`}
+                onClick={() =>
+                  setPhoneIssuesFilter((prev) => (prev === true ? undefined : true))
+                }
+              >
+                {phoneIssuesFilter === true && '✓ '}Phone Issues
+              </Badge>
+
+              <Badge
+                variant={lateHoursFilter === true ? 'default' : 'outline'}
+                className={`cursor-pointer px-3 py-1.5 transition-all duration-200 hover:scale-105 ${
+                  lateHoursFilter === true
+                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
+                    : 'hover:bg-accent'
+                }`}
+                onClick={() =>
+                  setLateHoursFilter((prev) => (prev === true ? undefined : true))
+                }
+              >
+                {lateHoursFilter === true && '✓ '}Late Hours
+              </Badge>
+
+              <Badge
+                variant={franchiseFilter === false ? 'default' : 'outline'}
+                className={`cursor-pointer px-3 py-1.5 transition-all duration-200 hover:scale-105 ${
+                  franchiseFilter === false
+                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
+                    : 'hover:bg-accent'
+                }`}
+                onClick={() =>
+                  setFranchiseFilter((prev) => (prev === false ? undefined : false))
+                }
+              >
+                {franchiseFilter === false && '✓ '}Independent
+              </Badge>
+
+              <Badge
+                variant={hasChatFilter === false ? 'default' : 'outline'}
+                className={`cursor-pointer px-3 py-1.5 transition-all duration-200 hover:scale-105 ${
+                  hasChatFilter === false
+                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
+                    : 'hover:bg-accent'
+                }`}
+                onClick={() =>
+                  setHasChatFilter((prev) => (prev === false ? undefined : false))
+                }
+              >
+                {hasChatFilter === false && '✓ '}No Chat Widget
+              </Badge>
             </div>
           </div>
 
@@ -308,6 +428,9 @@ export default function LeadsPage() {
             </div>
           </div>
         )}
+
+        {/* Scoring Guide Modal */}
+        <ScoringGuide open={showScoringGuide} onOpenChange={setShowScoringGuide} />
       </div>
     </AppLayout>
   )
